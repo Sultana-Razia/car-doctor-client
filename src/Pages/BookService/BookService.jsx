@@ -1,12 +1,12 @@
 import React, { useContext } from 'react';
 import { Link, useLoaderData } from 'react-router-dom';
-import img from '../../assets/images/checkout/checkout.png';
+import image from '../../assets/images/checkout/checkout.png';
 import { AuthContext } from '../../providers/AuthProvider';
 
 const BookService = () => {
 
     const service = useLoaderData();
-    const { title, _id, price } = service;
+    const { title, _id, price, img } = service;
 
     const { user } = useContext(AuthContext);
 
@@ -17,20 +17,38 @@ const BookService = () => {
         const name = form.name.value;
         const date = form.date.value;
         const email = user?.email;
-        const order = {
+        const booking = {
             customerName: name,
+            img,
             email,
             date,
-            service: _id,
+            service: title,
+            service_id: _id,
             price: price
         }
-        console.log(order);
+        console.log(booking);
+
+
+        fetch('http://localhost:5000/bookings', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(booking)
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                if (data.insertedId) {
+                    alert('Your service has been booked successfully');
+                }
+            })
     }
 
     return (
         <div>
             <div className='relative'>
-                <img className='w-full' src={img} alt="" />
+                <img className='w-full' src={image} alt="" />
                 <div className='absolute bottom-0 flex items-center pl-20 h-full w-full bg-gradient-to-r from-[rgba(21,21,21,1.00)] to-[rgba(21,21,21,0)] rounded text-white'>
                     <h2 className='text-4xl font-bold'>Check Out</h2>
                 </div>
