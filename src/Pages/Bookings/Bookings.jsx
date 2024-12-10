@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../providers/AuthProvider';
 import BookingRow from './BookingRow';
+import axios from 'axios';
 
 const Bookings = () => {
 
@@ -8,10 +9,16 @@ const Bookings = () => {
     const [bookings, setBookings] = useState([]);
 
     const url = `http://localhost:5000/bookings?email=${user.email}`
+
     useEffect(() => {
-        fetch(url)
-            .then(res => res.json())
-            .then(data => setBookings(data))
+        // fetch(url)
+        //     .then(res => res.json())
+        //     .then(data => setBookings(data))
+
+        axios.get(url, { withCredentials: true })
+            .then(res => {
+                setBookings(res.data);
+            })
     }, [url]);
 
     const handleDelete = id => {
